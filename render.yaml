@@ -1,0 +1,23 @@
+services:
+  - type: cron_job
+    name: options-data-harvester
+    env: python
+    plan: standard
+
+    # Schedules: 10:00 AM ET and 4:30 PM ET (convert to UTC = 14:00 and 20:30)
+    schedule:
+      - cron: "0 14 * * MON-FRI"    # 10:00 AM ET
+      - cron: "30 20 * * MON-FRI"   # 4:30 PM ET
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: python options_test_run.py
+
+    envVars:
+      - key: GDRIVE_FOLDER_ID
+        value: your_google_drive_folder_id_here
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/secrets/gdrive_key.json
+
+    secretFiles:
+      - name: gdrive_key.json
+        mountPath: /etc/secrets/gdrive_key.json
